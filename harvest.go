@@ -21,7 +21,6 @@ type FWItem struct {
 
 func get_tokendata(line, sep string) string {
 	return line[strings.LastIndex(line, sep)+1 : len(line)]
-
 }
 
 func parse_line(line string) (bool, FWItem) {
