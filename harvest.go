@@ -33,7 +33,6 @@ func parse_line(line string) (bool, FWItem) {
 		item.action = start[1]
 		tokens := strings.Split(line, " ")
 		for index := range tokens {
-			//fmt.Println(tokens[index])
 			if strings.Contains(tokens[index], "IN=") {
 				item.inIf = get_tokendata(tokens[index], "=")
 			}
