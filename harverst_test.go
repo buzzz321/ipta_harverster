@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"testing"
 )
 
@@ -24,4 +25,18 @@ func TestParse_line(t *testing.T) {
 	if res.action != "CBLK" {
 		t.Errorf("parse_line returned %s extected CBLK", res.action)
 	}
+}
+
+func TestGet_date(t *testing.T) {
+	reDate := regexp.MustCompile(`^(\w+)\s+(\d+)\s(\d\d):(\d\d):(\d\d)`)
+	res := get_date("Jun 3 12:12:21", reDate)
+
+	if res.Day() != 3 {
+		t.Errorf("get_date returned %d extected 3", res.Day())
+	}
+
+	if res.Month() != 6 {
+		t.Errorf("get_date returned %d extected 6", res.Month())
+	}
+
 }
