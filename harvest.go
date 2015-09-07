@@ -82,6 +82,15 @@ func parse_line(line string) (bool, FWItem) {
 			if strings.Contains(tokens[index], "DST=") {
 				item.dst = get_tokendata(tokens[index], "=")
 			}
+			if strings.Contains(tokens[index], "PROTO=") {
+				item.proto = get_tokendata(tokens[index], "=")
+			}
+			if strings.Contains(tokens[index], "SPT=") {
+				item.spt = get_tokendata(tokens[index], "=")
+			}
+			if strings.Contains(tokens[index], "DPT=") {
+				item.dpt = get_tokendata(tokens[index], "=")
+			}
 			item.date = get_date(line, reDate)
 		}
 	}
