@@ -13,15 +13,16 @@ import (
 
 type IPTAConfig struct {
 	Main struct {
-		Db_Type  string
-		Db_Host  string
-		Db_User  string
-		Db_Pass  string
-		Db_Table string
+		Db_Type            string
+		Db_Host            string
+		Db_User            string
+		Db_Pass            string
+		Db_Table           string
+		Db_Sqlite_Filename string
 	}
 }
 
-func read_config(filename string) {
+func read_config(filename string) IPTAConfig {
 	cfgStr, err := ioutil.ReadFile(filename)
 	if err != nil {
 		fmt.Println(err)
@@ -36,6 +37,8 @@ func read_config(filename string) {
 		os.Exit(1)
 	}
 	fmt.Println(cfg.Main.Db_Type)
+
+	return cfg
 }
 
 func main() {
@@ -46,14 +49,30 @@ func main() {
 		log.Fatal(err)
 	}
 
-	read_config(usr.HomeDir + "/.ipta")
+	cfg := read_config(usr.HomeDir + "/.ipta")
 
 	flag.StringVar(&syslogflag, "import", "", "To import syslog you need to specify a filename")
 	flag.StringVar(&syslogflag, "i", "", "To import syslog you need to specify a filename")
+	longCreateF := flag.Bool("create-db", false, "")
+	createF := flag.Bool("cd", false, "")
+	longDeleteF := flag.Bool("delete-db", false, "")
+	deleteF := flag.Bool("dt", false, "")
 
 	flag.Parse()
 	if syslogflag != "" {
 		fmt.Printf("Arg = %s\n", syslogflag)
 		import_syslog(syslogflag)
 	}
+
+	if *longCreateF || *createF {
+		fmt.Printf("Arg = %s\n", syslogflag)
+
+		create_table(cfg)
+	}
+	if *longDeleteF || *deleteF {
+		fmt.Printf("Arg = %s\n", syslogflag)
+
+		delete_table(cfg)
+	}
+
 }

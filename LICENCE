@@ -61,3 +61,5 @@ package and inventing the software in the first place: Anders
 Configuration file parsing partially built on code from Lubomir I.
 Ivanov <neolit123@gmail.com/ and can be found at http://github.com/ in
 its original form as well.
+
+Go porting by Anders Olme
