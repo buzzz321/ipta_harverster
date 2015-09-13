@@ -1,0 +1,10 @@
+*.log
+*.db
+
+#backup files
+*\~
+\#*\#
+
+#various project files
+**/.idea
+*.iml

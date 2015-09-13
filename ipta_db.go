@@ -12,7 +12,7 @@ import (
 func create_table(cfg IPTAConfig) {
 	fmt.Println("hello")
 	fmt.Println(cfg.Main.Db_Sqlite_Filename)
-	db, err := sql.Open("sqlite3", "./"+cfg.Main.Db_Sqlite_Filename)
+	db, err := sql.Open("sqlite3", "./" + cfg.Main.Db_Sqlite_Filename)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
@@ -23,14 +23,14 @@ func create_table(cfg IPTAConfig) {
 	CREATE TABLE %s (
 		id integer PRIMARY KEY AUTOINCREMENT,
 		timestamp timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-		if_in varchar(10) DEFAULT NULL,
-		if_out varchar(10) DEFAULT NULL,
-		src_ip varchar(10) DEFAULT NULL,
-		src_prt varchar(10) DEFAULT NULL,
-		dst_ip varchar(10)  DEFAULT NULL,
-		dst_prt varchar(10) DEFAULT NULL,
-		proto varchar(10) DEFAULT NULL,
-		action varchar(10) DEFAULT NULL,
+		if_in UNSIGNED BIG INT DEFAULT NULL,
+		if_out UNSIGNED BIG INT DEFAULT NULL,
+		src_ip UNSIGNED BIG INT DEFAULT NULL,
+		src_prt UNSIGNED BIG INT DEFAULT NULL,
+		dst_ip UNSIGNED BIG INT  DEFAULT NULL,
+		dst_prt UNSIGNED BIG INT DEFAULT NULL,
+		proto UNSIGNED BIG INT DEFAULT NULL,
+		action UNSIGNED BIG INT DEFAULT NULL,
 		mac varchar(40) DEFAULT NULL);`, cfg.Main.Db_Table)
 	_, err = db.Exec(sqlStmt)
 	if err != nil {
@@ -40,7 +40,7 @@ func create_table(cfg IPTAConfig) {
 }
 
 func delete_table(cfg IPTAConfig) {
-	db, err := sql.Open("sqlite3", "./"+cfg.Main.Db_Sqlite_Filename)
+	db, err := sql.Open("sqlite3", "./" + cfg.Main.Db_Sqlite_Filename)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
