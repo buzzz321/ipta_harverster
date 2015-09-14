@@ -13,13 +13,14 @@ import (
 
 type IPTAConfig struct {
 	Main struct {
-		Db_Type            string
-		Db_Host            string
-		Db_User            string
-		Db_Pass            string
-		Db_Table           string
-		Db_Sqlite_Filename string
-	}
+			 Db_Type            string
+			 Db_Name          string
+			 Db_Host            string
+			 Db_User            string
+			 Db_Pass            string
+			 Db_Table           string
+			 Db_Sqlite_Filename string
+		 }
 }
 
 func read_config(filename string) IPTAConfig {
