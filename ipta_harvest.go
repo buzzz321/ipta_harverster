@@ -62,7 +62,7 @@ func main() {
 	flag.Parse()
 	if syslogflag != "" {
 		fmt.Printf("Arg = %s\n", syslogflag)
-		import_syslog(syslogflag)
+		import_syslog(cfg,syslogflag)
 	}
 
 	if *longCreateF || *createF {

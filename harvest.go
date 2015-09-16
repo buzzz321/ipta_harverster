@@ -39,7 +39,7 @@ var months = map[string]time.Month{
 }
 
 func get_tokendata(line, sep string) string {
-	return line[strings.LastIndex(line, sep)+1 : len(line)]
+	return line[strings.LastIndex(line, sep) + 1 : len(line)]
 }
 
 func get_date(line string, reDate *regexp.Regexp) time.Time {
@@ -97,13 +97,16 @@ func parse_line(line string) (bool, FWItem) {
 	return valid, item
 }
 
-func import_syslog(filename string) {
+func import_syslog(cfg IPTAConfig, filename string) {
 	file, err := os.Open(filename)
 
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	defer file.Close()
+	db := open_db(cfg)
+	defer db.Close()
 	//re := regexp.MustCompile(`IPT:\s(\w+)\sIN=(\w+)\sOUT=(\w*)\sMAC=([0-9a-f:]+)\sSRC=([0-9.]+)\sDST=([0-9.]+)\s.*PROTO=(\w+)\sSPT=([0-9]+)\sDPT=([0-9]+)`)
 
 	scanner := bufio.NewScanner(file)
@@ -113,6 +116,7 @@ func import_syslog(filename string) {
 
 		if valid {
 			fmt.Println(item)
+			add_item(cfg, db, item)
 		}
 	}
 

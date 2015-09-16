@@ -65,8 +65,7 @@ func delete_table(cfg IPTAConfig) {
 	}
 }
 
-func add_item(cfg IPTAConfig, item FWItem) {
-	db := open_db(cfg)
+func add_item(cfg IPTAConfig, db *sql.DB, item FWItem) {
 
 	sqlStmt := fmt.Sprintf(`
 	INSERT INTO %s  ( if_in, if_out, src_ip, src_prt, dst_ip, dst_prt, proto, action, mac) VALUES
@@ -77,6 +76,5 @@ func add_item(cfg IPTAConfig, item FWItem) {
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)
-		os.Exit(1)
 	}
 }
