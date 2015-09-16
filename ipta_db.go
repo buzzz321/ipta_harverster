@@ -65,6 +65,20 @@ func delete_table(cfg IPTAConfig) {
 	}
 }
 
+func clear_db(cfg IPTAConfig) {
+	db := open_db(cfg)
+	defer db.Close()
+
+	sqlStmt := fmt.Sprintf(`DELETE FROM %s;	`, cfg.Main.Db_Table)
+
+	_, err := db.Exec(sqlStmt)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+		os.Exit(1)
+	}
+
+}
+
 func add_item(cfg IPTAConfig, db *sql.DB, item FWItem) {
 
 	sqlStmt := fmt.Sprintf(`
