@@ -79,7 +79,7 @@ func main() {
 		delete_table(cfg)
 	}
 
-	if *longClear || clearF {
+	if *longClear || *clearF {
 		clear_db(cfg)
 	}
 }
