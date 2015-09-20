@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"os"
+	"strings"
 )
 
 func open_db(cfg IPTAConfig) *sql.DB {
@@ -87,6 +88,27 @@ func add_item(cfg IPTAConfig, db *sql.DB, item FWItem) {
 '%s', '%s', '%s', '%s' )
 	`, cfg.Main.Db_Table, item.date.Format("2006-01-02 15:04:05"), item.inIf, item.outIf, item.src, item.spt, item.dst, item.dpt, item.proto, item.action, item.mac)
 
+	_, err := db.Exec(sqlStmt)
+	if err != nil {
+		log.Printf("%q: %s\n", err, sqlStmt)
+	}
+}
+
+func add_items(cfg IPTAConfig, db *sql.DB, items []FWItem) {
+
+	sqlStmt := fmt.Sprintf(`
+	INSERT INTO %s  (timestamp, if_in, if_out, src_ip, src_prt, dst_ip, dst_prt, proto, action, mac) VALUES
+	`, cfg.Main.Db_Table)
+
+	for item := range items {
+		sqlStmt = strings.Join(sqlStmt, fmt.Sprintf(`
+('%s', '%s', '%s', INET_ATON('%s'), '%s', INET_ATON('%s'),
+'%s', '%s', '%s', '%s'),
+	`, item.date.Format("2006-01-02 15:04:05"), item.inIf, item.outIf, item.src, item.spt, item.dst, item.dpt, item.proto, item.action, item.mac))
+	}
+	sqlStmt = strings.Join(sqlStmt[:-1], ";")
+
+	fmt.Println(sqlStmt)
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)

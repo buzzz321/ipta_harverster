@@ -109,14 +109,22 @@ func import_syslog(cfg IPTAConfig, filename string) {
 	defer db.Close()
 	//re := regexp.MustCompile(`IPT:\s(\w+)\sIN=(\w+)\sOUT=(\w*)\sMAC=([0-9a-f:]+)\sSRC=([0-9.]+)\sDST=([0-9.]+)\s.*PROTO=(\w+)\sSPT=([0-9]+)\sDPT=([0-9]+)`)
 
+	//var items [1024]FWItem
+	//index := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
 		valid, item := parse_line(line)
 
 		if valid {
-			fmt.Println(item)
-			add_item(cfg, db, item)
+		/*	items[index]=item
+			++index
+			//fmt.Println(item)
+			if index > len(items){
+				index = 0
+				add_items(cfg, db, items)
+			}
+		*/	add_item(cfg, db, item)
 		}
 	}
 
