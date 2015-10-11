@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strconv"
@@ -39,7 +40,7 @@ var months = map[string]time.Month{
 }
 
 func get_tokendata(line, sep string) string {
-	return line[strings.LastIndex(line, sep) + 1 : len(line)]
+	return line[strings.LastIndex(line, sep)+1 : len(line)]
 }
 
 func get_date(line string, reDate *regexp.Regexp) time.Time {
@@ -117,16 +118,63 @@ func import_syslog(cfg IPTAConfig, filename string) {
 		valid, item := parse_line(line)
 
 		if valid {
-		/*	items[index]=item
-			++index
-			//fmt.Println(item)
-			if index > len(items){
-				index = 0
-				add_items(cfg, db, items)
-			}
-		*/	add_item(cfg, db, item)
+			/*	items[index]=item
+				++index
+				//fmt.Println(item)
+				if index > len(items){
+					index = 0
+					add_items(cfg, db, items)
+				}
+			*/
+			add_item(cfg, db, item)
 		}
 	}
+
+	file.Close()
+}
+
+func follow_syslog(cfg IPTAConfig, filename string) {
+	file, err := os.Open(filename)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	db := open_db(cfg)
+	defer db.Close()
+
+	reader := bufio.NewReader(file)
+	fileinfo, _ := file.Stat()
+
+	for {
+		reader.Peek(1)
+		bytes_left := reader.Buffered()
+		offset_eof, _ := file.Seek(0, os.SEEK_END)
+		if bytes_left > 0 {
+			line, err := reader.ReadString('\n')
+			if err == io.EOF || err == nil {
+				fmt.Printf("--> line = %s\t | bytes_left= %d offset_eof = %d size = %d\n", string(line[:len(line)-1]), bytes_left, offset_eof, fileinfo.Size())
+			}
+		} else if fileinfo.Size() > offset_eof {
+			file.Close()
+			file, _ = os.Open(filename)
+			file.Seek(offset_eof, os.SEEK_SET)
+
+			reader = bufio.NewReader(file)
+		}
+		checker, _ := os.Open(filename)
+		fileinfo, _ = checker.Stat()
+		checker.Close()
+
+		if bytes_left < 10 {
+			time.Sleep(500 * time.Millisecond)
+		}
+	}
+	/*
+		if valid {
+			add_item(cfg, db, item)
+		}
+	*/
 
 	file.Close()
 }

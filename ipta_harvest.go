@@ -7,20 +7,21 @@ import (
 	"log"
 	"os"
 	"os/user"
-
 	"gopkg.in/gcfg.v1"
 )
 
+type Main struct {
+	Db_Type            string
+	Db_Name            string
+	Db_Host            string
+	Db_User            string
+	Db_Pass            string
+	Db_Table           string
+	Db_Sqlite_Filename string
+}
+
 type IPTAConfig struct {
-	Main struct {
-		Db_Type            string
-		Db_Name            string
-		Db_Host            string
-		Db_User            string
-		Db_Pass            string
-		Db_Table           string
-		Db_Sqlite_Filename string
-	}
+	Main
 }
 
 func read_config(filename string) IPTAConfig {
@@ -43,7 +44,7 @@ func read_config(filename string) IPTAConfig {
 }
 
 func main() {
-	var syslogflag string
+	var syslogflag, followflag string
 	usr, err := user.Current()
 
 	if err != nil {
@@ -54,6 +55,9 @@ func main() {
 
 	flag.StringVar(&syslogflag, "import", "", "To import syslog you need to specify a filename")
 	flag.StringVar(&syslogflag, "i", "", "To import syslog you need to specify a filename")
+	flag.StringVar(&followflag, "follow", "", "To follow syslog you need to specify a filename")
+	flag.StringVar(&followflag, "f", "", "To follow syslog you need to specify a filename")
+
 	longCreateF := flag.Bool("create-table", false, "")
 	createF := flag.Bool("ct", false, "")
 	longDeleteF := flag.Bool("delete-db", false, "")
@@ -65,6 +69,11 @@ func main() {
 	if syslogflag != "" {
 		fmt.Printf("Arg = %s\n", syslogflag)
 		import_syslog(cfg, syslogflag)
+	}
+
+	if followflag != "" {
+		fmt.Printf("Arg = %s\n", followflag)
+		follow_syslog(cfg, followflag)
 	}
 
 	if *longCreateF || *createF {
