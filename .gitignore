@@ -1,6 +1,7 @@
 *.log
 *.db
 ipta_harvest
+ipta
 
 #backup files
 *\~
